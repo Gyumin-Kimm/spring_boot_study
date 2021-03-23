@@ -6,6 +6,10 @@ import com.example.study.model.entity.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.transaction.Transactional;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -39,8 +43,9 @@ public class UserRepositoryTest extends StudyApplicationTests {
     }
 
     @Test
+    @Transactional
     public void update(){
-        Optional<User> user = userRepository.findById(2L);
+        Optional<User> user = userRepository.findById(3L);
         user.ifPresent(selectUser ->{
            selectUser.setAccount("PPPP");
            selectUser.setUpdatedAt(LocalDateTime.now());
@@ -51,7 +56,18 @@ public class UserRepositoryTest extends StudyApplicationTests {
     }
 
     @Test
+    @Transactional
     public void delete(){
+        Optional<User> user = userRepository.findById(3L);
 
+        assertTrue(user.isPresent()); // true
+
+        user.ifPresent(selectUser->{
+            userRepository.delete(selectUser);
+        });
+
+        Optional<User> deleteUser = userRepository.findById(2L);
+
+        assertFalse(deleteUser.isPresent()); // false
     }
 }
