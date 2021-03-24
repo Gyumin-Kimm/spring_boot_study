@@ -4,31 +4,36 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
-@Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Entity // == table
-//@Table(name = "user") 실제 테이블이름과 같으면 자동으로 매핑됨
-public class User {
+@AllArgsConstructor
+@Data
+@Entity
+public class AdminUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //@Column(name = "account") 컬럼과 변수명이 같으면 자동으로 매핑됨
     private String account;
 
     private String password;
 
     private String status;
 
-    private String email;
+    private String role;
 
-    private String phoneNumber;
+    private LocalDateTime lastLoginAt;
+
+    private LocalDateTime passwordUpdateAt;
+
+    private int loginFailCount;
 
     private LocalDateTime registeredAt;
 
