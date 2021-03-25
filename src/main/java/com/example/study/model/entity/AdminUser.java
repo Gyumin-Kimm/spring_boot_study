@@ -31,7 +31,7 @@ public class AdminUser {
 
     private LocalDateTime lastLoginAt;
 
-    private LocalDateTime passwordUpdateAt;
+    private LocalDateTime passwordUpdatedAt;
 
     private int loginFailCount;
 
