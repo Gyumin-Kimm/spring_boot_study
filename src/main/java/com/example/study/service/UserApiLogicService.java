@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class UserApiLogicService implements CrudInterface<UserApiRequest, UserApiResponse> {
@@ -17,11 +18,11 @@ public class UserApiLogicService implements CrudInterface<UserApiRequest, UserAp
     @Autowired
     private UserRepository userRepository;
 
-    // 1. request data
-    // 2. user 생성
-    // 3. 생성된 데이터 -> UserApiResponse
     @Override
     public Header<UserApiResponse> create(Header<UserApiRequest> request) {
+        // 1. request data
+        // 2. user 생성
+        // 3. 생성된 데이터 -> UserApiResponse
 
         //1. request data
         UserApiRequest userApiRequest = request.getData();
@@ -43,7 +44,18 @@ public class UserApiLogicService implements CrudInterface<UserApiRequest, UserAp
 
     @Override
     public Header<UserApiResponse> read(Long id) {
-        return null;
+
+        // id -> repository getOne, getById
+//        Optional<User> optional = userRepository.findById(id);
+
+        // user -> userApiResponse return
+//        return optional
+//                .map(user -> response(user))
+//                .orElseGet(()->Header.ERROR("데이터 없음"));
+
+        return userRepository.findById(id)
+                .map(user -> response(user))
+                .orElseGet(()->Header.ERROR("데이터 없음"));
     }
 
     @Override
@@ -56,7 +68,7 @@ public class UserApiLogicService implements CrudInterface<UserApiRequest, UserAp
         return null;
     }
 
-    private Header<UserApiResponse> response(User user){
+    private Header<UserApiResponse> response(User user) {
         // user -> userApiResponse
         UserApiResponse userApiResponse = UserApiResponse.builder()
                 .id(user.getId())
