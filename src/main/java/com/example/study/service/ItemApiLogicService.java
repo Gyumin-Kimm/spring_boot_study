@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 public class ItemApiLogicService implements CrudInterface<ItemApiRequest, ItemApiResponse> {
@@ -46,7 +45,7 @@ public class ItemApiLogicService implements CrudInterface<ItemApiRequest, ItemAp
     public Header<ItemApiResponse> read(Long id) {
         return itemRepository.findById(id)
                 .map(item -> response(item))
-                .orElseGet(()-> Header.ERROR("데이터 없음"));
+                .orElseGet(() -> Header.ERROR("데이터 없음"));
     }
 
     @Override
@@ -69,15 +68,20 @@ public class ItemApiLogicService implements CrudInterface<ItemApiRequest, ItemAp
                 })
                 .map(newEntityItem -> itemRepository.save(newEntityItem))
                 .map(item -> response(item))
-                .orElseGet(()->Header.ERROR("데이터 없음"));
+                .orElseGet(() -> Header.ERROR("데이터 없음"));
     }
 
     @Override
     public Header delete(Long id) {
-        return null;
+        return itemRepository.findById(id)
+                .map(item -> {
+                    itemRepository.delete(item);
+                    return Header.OK();
+                })
+                .orElseGet(() -> Header.ERROR("데이터 없음"));
     }
 
-    private Header<ItemApiResponse> response(Item item){
+    private Header<ItemApiResponse> response(Item item) {
         ItemApiResponse body = ItemApiResponse.builder()
                 .id(item.getId())
                 .status(item.getStatus())
