@@ -3,14 +3,12 @@ package com.example.study.sample;
 import com.example.study.StudyApplicationTests;
 import com.example.study.model.entity.Category;
 import com.example.study.repository.CategoryRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.List;
 
-@Slf4j
 public class CategorySample extends StudyApplicationTests {
 
     @Autowired
@@ -28,9 +26,6 @@ public class CategorySample extends StudyApplicationTests {
             Category create = Category.builder().type(c).title(t).build();
             categoryRepository.save(create);
         }
-
-        log.info("hi");
-
 
     }
 

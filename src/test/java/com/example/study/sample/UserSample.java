@@ -4,12 +4,14 @@ import com.example.study.StudyApplicationTests;
 import com.example.study.model.entity.User;
 import com.example.study.model.enumclass.UserStatus;
 import com.example.study.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.Random;
 
+@Slf4j
 public class UserSample extends StudyApplicationTests {
 
     private Random random;
@@ -37,7 +39,7 @@ public class UserSample extends StudyApplicationTests {
                     .unregisteredAt(status.equals(UserStatus.UNREGISTERED) ? getRandomDate() : null )
                     .build();
 
-//            log.info("{}",user);
+            log.info("{}",user);
             userRepository.save(user);
         }
 
