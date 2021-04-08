@@ -32,9 +32,6 @@ public class UserApiLogicService extends BaseService<UserApiRequest, UserApiResp
 
     @Override
     public Header<UserApiResponse> create(Header<UserApiRequest> request) {
-        // 1. request data
-        // 2. user 생성
-        // 3. 생성된 데이터 -> UserApiResponse
 
         //1. request data
         UserApiRequest userApiRequest = request.getData();
@@ -118,7 +115,7 @@ public class UserApiLogicService extends BaseService<UserApiRequest, UserApiResp
         UserApiResponse userApiResponse = UserApiResponse.builder()
                 .id(user.getId())
                 .account(user.getAccount())
-                .password(user.getPassword()) // todo 암호화, 길이
+                .password(user.getPassword())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
                 .status(user.getStatus())
@@ -126,7 +123,6 @@ public class UserApiLogicService extends BaseService<UserApiRequest, UserApiResp
                 .unregisteredAt(user.getUnregisteredAt())
                 .build();
 
-        // Header + data return
         return userApiResponse;
     }
 

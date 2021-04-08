@@ -45,7 +45,7 @@ public class AdminUser {
 
     private LocalDateTime unregisteredAt;
 
-    @CreatedDate
+    @CreatedDate // JpaConfig, LoginUserAuditorAware
     private LocalDateTime createdAt;
 
     @CreatedBy

@@ -2,26 +2,25 @@ package com.example.study.repository;
 
 
 import com.example.study.StudyApplicationTests;
-import com.example.study.model.entity.Item;
 import com.example.study.model.entity.User;
 import com.example.study.model.enumclass.UserStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.transaction.Transactional;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class UserRepositoryTest extends StudyApplicationTests {
 
-    // Dependency Injection(DI)
+    // Dependency Injection(DI) - 의존성 주입 : spring 객체 직접관리
     @Autowired
     private UserRepository userRepository;
 
     @Test
+    @Transactional
     public void create(){
         String account = "Test03";
         String password = "Test03";
@@ -31,19 +30,14 @@ public class UserRepositoryTest extends StudyApplicationTests {
         LocalDateTime now = LocalDateTime.now();
         String createdBy = "AdminServer";
 
-        User user = new User();
-        user.setAccount(account);
-        user.setPassword(password);
-        user.setStatus(status);
-        user.setEmail(email);
-        user.setPhoneNumber(phoneNumber);
-        user.setRegisteredAt(now);
-
-        User u = User.builder()
+        User user = User.builder()
                 .account(account)
                 .password(password)
                 .status(status)
                 .email(email)
+                .phoneNumber(phoneNumber)
+                .registeredAt(now)
+                .createdBy(createdBy)
                 .build();
 
         User newUser = userRepository.save(user);
@@ -54,25 +48,30 @@ public class UserRepositoryTest extends StudyApplicationTests {
     @Test
     @Transactional
     public void read(){
-        User user = userRepository.findFirstByPhoneNumberOrderByIdDesc("010-1111-2222");
+        Optional<User> user = userRepository.findFirstByPhoneNumberOrderByIdDesc("010-1111-0016");
 
-        user.getOrderGroupList().forEach(orderGroup -> {
-            System.out.println(orderGroup.getRevName());
-            System.out.println(orderGroup.getRevAddress());
-            System.out.println(orderGroup.getTotalPrice());
-            System.out.println(orderGroup.getTotalQuantity());
+        user.ifPresent(selectUser ->{
+            selectUser.getOrderGroupList().forEach(orderGroup -> {
+                System.out.println("-----OrderGroup-----");
+//                System.out.println(orderGroup.getRevName());
+//                System.out.println(orderGroup.getRevAddress());
+                System.out.println(orderGroup.getTotalPrice());
+                System.out.println(orderGroup.getTotalQuantity());
 
-            orderGroup.getOrderDetailList().forEach(orderDetail -> {
-                System.out.println(orderDetail.getStatus());
-                System.out.println(orderDetail.getArrivalDate());
+                orderGroup.getOrderDetailList().forEach(orderDetail -> {
+                    System.out.println("-----OrderDetail-----");
+//                    System.out.println(orderDetail.getStatus());
+//                    System.out.println(orderDetail.getArrivalDate());
+                    System.out.println(orderDetail.getTotalPrice());
 
-                System.out.println(orderDetail.getItem().getName());
-                System.out.println(orderDetail.getItem().getPartner().getCallCenter());
+                    System.out.println(orderDetail.getItem().getName());
+//                    System.out.println(orderDetail.getItem().getPartner().getCallCenter());
 
-                System.out.println(orderDetail.getItem().getPartner().getCategory().getTitle());
+//                    System.out.println(orderDetail.getItem().getPartner().getCategory().getTitle());
+                });
             });
         });
-        assertNotNull(user);
+
     }
 
     @Test
@@ -80,11 +79,13 @@ public class UserRepositoryTest extends StudyApplicationTests {
     public void update(){
         Optional<User> user = userRepository.findById(3L);
         user.ifPresent(selectUser ->{
-           selectUser.setAccount("PPPP");
+           selectUser.setAccount("PP");
            selectUser.setUpdatedAt(LocalDateTime.now());
            selectUser.setUpdatedBy("update method()");
 
-           userRepository.save(selectUser);
+           User updateUser = userRepository.save(selectUser);
+
+           assertNotNull(updateUser);
         });
     }
 
@@ -92,15 +93,11 @@ public class UserRepositoryTest extends StudyApplicationTests {
     @Transactional
     public void delete(){
         Optional<User> user = userRepository.findById(3L);
-
         assertTrue(user.isPresent()); // true
 
-        user.ifPresent(selectUser->{
-            userRepository.delete(selectUser);
-        });
+        user.ifPresent(selectUser-> userRepository.delete(selectUser));
 
-        Optional<User> deleteUser = userRepository.findById(2L);
-
+        Optional<User> deleteUser = userRepository.findById(3L);
         assertFalse(deleteUser.isPresent()); // false
     }
 }

@@ -28,7 +28,7 @@ public abstract class CrudController<Req,Res,Entity> implements CrudInterface<Re
 
     @Override
     @GetMapping("{id}")
-    public Header<Res> read(@PathVariable Long id) {
+    public Header<Res> read(@PathVariable(name = "id") Long id) {
         return baseService.read(id);
     }
 
@@ -40,7 +40,7 @@ public abstract class CrudController<Req,Res,Entity> implements CrudInterface<Re
 
     @Override
     @DeleteMapping("{id}")
-    public Header delete(@PathVariable Long id) {
+    public Header delete(@PathVariable(name = "id") Long id) {
         return baseService.delete(id);
     }
 
