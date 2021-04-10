@@ -20,6 +20,7 @@ CREATE TABLE `study`.`settlement` (
   `price` DECIMAL(12,4) NULL,
   PRIMARY KEY (`id`));
  */
+
 @Slf4j
 @RestController
 @RequestMapping("/settlement")
@@ -31,31 +32,36 @@ public class SettlementApiController {
     @Autowired
     private UserRepository userRepository;
 
+    // 각 ID 별로 POST, PUT이 요청왔을때 DB에서 TotalPrice를 계산하여 SETTLEMENT 테이블에 삽입
+
     @PostMapping("{id}")
     public Settlement create(@PathVariable Long id){
+
+        // POST, ID존재시 update 함수로
         if(settlementRepository.findById(id).isPresent()){
             return update(id);
         }
 
+        // SELECT
         Optional<User> optional = userRepository.findById(id);
 
+        // TotalPrcie 계산
         BigDecimal totalPrice = optional.map(user -> {
             return user.getOrderGroupList()
                     .stream()
-                    .map(orderGroup -> {
-//                        System.out.println(orderGroup.getTotalPrice());
-                        return orderGroup.getTotalPrice();
-                    })
+                    .map(OrderGroup::getTotalPrice)
                     .reduce(BigDecimal::add)
                     .get();
         })
                 .orElse(null);
 
+        // Settlement 객체 생성
         Settlement settlement = Settlement.builder()
                 .id(id)
                 .price(totalPrice)
                 .build();
 
+        // CREATE
         return settlementRepository.save(settlement);
     }
 
@@ -64,6 +70,7 @@ public class SettlementApiController {
 
         Optional<Settlement> optional = settlementRepository.findById(id);
 
+        // 없을 때 null 리턴이 맞나..
         return optional
                 .orElse(null);
     }
