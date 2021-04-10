@@ -1,5 +1,6 @@
 package com.example.study.controller.api;
 
+import com.example.study.exception.NoContentException;
 import com.example.study.model.entity.OrderGroup;
 import com.example.study.model.entity.Settlement;
 import com.example.study.model.entity.User;
@@ -70,9 +71,10 @@ public class SettlementApiController {
 
         Optional<Settlement> optional = settlementRepository.findById(id);
 
-        // 없을 때 null 리턴이 맞나..
         return optional
-                .orElse(null);
+                .orElseGet(()->{
+                    throw new NoContentException("데이터가 없습니다.");
+                });
     }
 
     @PutMapping("{id}")
