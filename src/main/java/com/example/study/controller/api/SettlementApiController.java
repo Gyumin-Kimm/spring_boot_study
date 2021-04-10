@@ -54,7 +54,7 @@ public class SettlementApiController {
                     .reduce(BigDecimal::add)
                     .get();
         })
-                .orElse(null);
+                .orElse(BigDecimal.ZERO);
 
         // Settlement 객체 생성
         Settlement settlement = Settlement.builder()
@@ -90,7 +90,7 @@ public class SettlementApiController {
                     .map(OrderGroup::getTotalPrice)
                     .reduce(BigDecimal::add)
                     .get())
-                    .orElse(null);
+                    .orElse(BigDecimal.ZERO);
 
             settlement.setPrice(totalPrice);
 
